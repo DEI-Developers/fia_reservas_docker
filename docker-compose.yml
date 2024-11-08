@@ -27,8 +27,6 @@ services:
 
     container_name: librebooking
     restart: always
-    ports:
-      - 80:80
     depends_on:
       - db
     networks:
