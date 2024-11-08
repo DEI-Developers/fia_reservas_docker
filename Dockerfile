@@ -42,7 +42,7 @@ RUN set -ex; \
 
 # Clone LibreBooking repository and customize with dynamic LB_HOMEPAGE
 RUN set -ex; \
-    git clone --branch "${APP_GH_REF}" git@github.com:DEI-Developers/fia_reservas_app.git /var/www/html/${LB_HOMEPAGE}; \
+    git clone --branch "${APP_GH_REF}" https://github.com/DEI-Developers/fia_reservas_app.git /var/www/html/${LB_HOMEPAGE}; \
     chown -R www-data:www-data /var/www/html/${LB_HOMEPAGE}; \
     chmod -R 755 /var/www/html/${LB_HOMEPAGE}
 
