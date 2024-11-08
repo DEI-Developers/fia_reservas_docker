@@ -40,15 +40,10 @@ RUN set -ex; \
     pecl install timezonedb; \
     docker-php-ext-enable timezonedb;
 
-# Crear el directorio de destino y copiar los archivos
+# Clone LibreBooking repository and customize with dynamic LB_HOMEPAGE
 RUN set -ex; \
-    mkdir -p /var/www/html/${LB_HOMEPAGE}; 
-
-# Usar COPY en una línea independiente
-COPY ./../fia_reservas_app /var/www/html/${LB_HOMEPAGE}
-
-# Configurar permisos
-RUN chown -R www-data:www-data /var/www/html/${LB_HOMEPAGE}; \
+    git clone --branch "${APP_GH_REF}" https://github.com/librebooking/app.git /var/www/html/${LB_HOMEPAGE}; \
+    chown -R www-data:www-data /var/www/html/${LB_HOMEPAGE}; \
     chmod -R 755 /var/www/html/${LB_HOMEPAGE}
 
 USER www-data
