@@ -1,0 +1,59 @@
+services:
+  db:
+    image: linuxserver/mariadb:${DB_IMAGE_VERSION}
+    container_name: librebooking-db
+    restart: always
+    networks:
+      - librebooking
+    volumes:
+      - librebooking_data:/config
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ_DB}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - PHP_VERSION=${PHP_VERSION}
+        - APP_GH_REF=${APP_GH_REF}
+        - LB_HOMEPAGE=${LB_HOMEPAGE}
+
+    container_name: librebooking
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - db
+    networks:
+      - librebooking
+      - webservices
+    volumes:
+      - ./librebooking_conf:/config
+    environment:
+      - LB_DB_NAME=${LB_DB_NAME}
+      - LB_INSTALL_PWD=${LB_INSTALL_PWD}
+      - LB_DB_USER=${MYSQL_USER}
+      - LB_DB_USER_PWD=${MYSQL_PASSWORD}
+      - LB_DB_HOST=${LB_DB_HOST}
+      - LB_ENV=${LB_ENV}
+      - LB_LOG_FOLDER=${LB_LOG_FOLDER}
+      - LB_LOG_LEVEL=${LB_LOG_LEVEL}
+      - LB_LOG_SQL=${LB_LOG_SQL}
+      - TZ=${TZ_APP}
+      - LB_HOMEPAGE=${LB_HOMEPAGE}
+
+volumes:
+  librebooking_data:
+
+
+networks:
+  webservices:
+    external: true
+  librebooking:
